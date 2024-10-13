@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Homepage
+
+homepage:
+  proxmox:
+    base-url: https://192.168.50.15:8006
+    token-id: api_01
+    api-token: 7cd7d616-c957-4926-908f-c4b6f75ca7aa
+    username: root@pam
+    node-name: xavier
+  docker:
+    host: tcp://192.168.50.14:2375

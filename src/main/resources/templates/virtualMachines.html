@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            height: 100%;
+            overflow: hidden; /* 禁止整个页面滚动 */
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+        }
+        .header, .footer {
+            grid-column: span 2;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .header {
+            top: 0;
+            height: auto; /* 自适应内容高度 */
+        }
+        .footer {
+            bottom: 0;
+            height: auto; /* 自适应内容高度 */
+        }
+        .content {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 80px 20px;
+            height: calc(100vh - 20px); /* 动态计算中间部分高度 */
+            overflow: hidden; /* 不让整个content滚动，而是具体内容区域滚动 */
+        }
+        .left-panel, .right-panel {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            overflow-y: auto; /* 使虚拟机列表和虚拟机信息能够滚动 */
+        }
+        .left-panel {
+            width: 58%;
+            max-height: 100%; /* 限制左侧面板的最大高度，使其适应内容 */
+        }
+        .right-panel {
+            width: 41%;
+            max-height: 100%; /* 限制右侧面板的最大高度 */
+        }
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        table td {
+            background-color: #fafafa;
+        }
+        .vm-info {
+            display: inline-block;
+            background-color: #e0f7fa;
+            padding: 10px;
+            border-radius: 8px;
+            width: 28%;
+            text-align: left;
+            margin-inline: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div class="header">
+    <h1>Homepage</h1>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+    <!-- Left Panel - VM List -->
+    <div class="left-panel">
+        <h2>书签</h2>
+        <div class="vm-info" th:each="container : ${dockerContainers}">
+            <p>
+                <strong>名称:</strong>
+                <span th:text="${container.name}"></span>
+            </p>
+            <p>
+                <strong>状态:</strong>
+                <span th:text="${container.status}"></span>
+            </p>
+            <p th:if="${not #lists.isEmpty(container.publicPorts)}">
+                <strong>端口:</strong>
+                <span th:text="${#strings.listJoin(container.publicPorts, ',') }"></span>
+            </p>
+            <p th:if="${#lists.isEmpty(container.publicPorts)}">
+                <span>&nbsp;</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Right Panel - VM Info -->
+    <div class="right-panel">
+        <h2>虚拟机列表</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>名称</th>
+                <th>状态</th>
+                <th>标签</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vm : ${virtualMachines}">
+                <td th:text="${vm.name}">虚拟机名称</td>
+                <td th:text="${vm.status}">虚拟机状态</td>
+                <td th:text="${vm.tags.replace(';', ', ')}">虚拟机标签</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <p>© 2024 虚拟机管理系统 - 所有权利保留</p>
+</div>
+</body>
+</html>
